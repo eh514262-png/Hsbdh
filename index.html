@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى رضا الحبيب</title>
+    <style>
+        /* إعدادات الخلفية العامة */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            overflow-x: hidden;
+            color: white;
+        }
+
+        /* شاشة قفل الباسورد */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: all 0.5s ease;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: #ff4757;
+        }
+
+        .login-box input {
+            padding: 10px;
+            width: 200px;
+            border: none;
+            border-radius: 20px;
+            text-align: center;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .login-box button {
+            padding: 10px 25px;
+            margin-top: 15px;
+            background: #ff4757;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .login-box button:hover {
+            background: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        /* محتوى الموقع الرئيسي (مخفي في الأول) */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-top: 20px;
+            animation: pulseText 2s infinite;
+        }
+
+        /* معرض الصور الثنائية والثلاثية */
+        .gallery {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 40px auto;
+            max-width: 1000px;
+        }
+
+        .gallery img {
+            width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 5px solid white;
+            transition: transform 0.3s;
+        }
+
+        .gallery img:hover {
+            transform: scale(1.05) rotate(3deg);
+        }
+
+        /* أزرار التحكم في الصوت والفيديو */
+        .controls {
+            margin: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .btn-play { background-color: #2ed573; color: white; }
+        .btn-stop { background-color: #ff4757; color: white; }
+        .btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+        /* حاوية الفيديو في منتصف الشاشة */
+        #video-container {
+            display: none; /* مخفي في البداية */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 71, 87, 0.6);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* أنيميشن النبض للفيديو */
+        @keyframes pulseVideo {
+            0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); }
+            50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 40px rgba(255, 71, 87, 0.9); }
+            100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 20px rgba(255, 71, 87, 0.6); }
+        }
+
+        .pulsing {
+            animation: pulseVideo 1.5s infinite ease-in-out;
+        }
+
+        video {
+            max-width: 90vw;
+            max-height: 70vh;
+            border-radius: 10px;
+        }
+
+        /* عناصر التأثيرات (القلوب والكلمات الطائرة) */
+        .heart, .floating-text {
+            position: absolute;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 3s linear forwards;
+        }
+
+        .heart {
+            color: #ff4757;
+            font-size: 24px;
+        }
+
+        .floating-text {
+            color: #fff;
+            font-weight: bold;
+            font-size: 20px;
+            text-shadow: 2px 2px 4px rgba(255, 71, 87, 0.8);
+            white-space: nowrap;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulseText {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة طلب الباسورد -->
+    <div id="login-screen">
+        <div class="login-box">
+            <h2>مرحباً بك يا رضا 💖</h2>
+            <p>أدخل كلمة المرور لدخول عالم الحب</p>
+            <input type="password" id="password-input" placeholder="اكتب الباسورد هنا...">
+            <br>
+            <button onclick="checkPassword()">دخول ✨</button>
+        </div>
+    </div>
+
+    <!-- محتوى الموقع الرئيسي -->
+    <div id="main-content">
+        <h1>بحبك يا رضا 💖</h1>
+        <p style="font-size: 1.2rem;">أنت كل دنيتي وأجمل ما في عمري</p>
+
+        <!-- أزرار التحكم بالصوت -->
+        <div class="controls">
+            <h3>🎵 التحكم في الأغنية:</h3>
+            <button class="btn btn-play" onclick="playAudio()">تشغيل الصوت ▶️</button>
+            <button class="btn btn-stop" onclick="stopAudio()">إيقاف الصوت ⏸️</button>
+        </div>
+
+        <!-- أزرار التحكم بالفيديو -->
+        <div class="controls">
+            <h3>🎬 التحكم في الفيديو:</h3>
+            <button class="btn btn-play" onclick="playVideo()">تشغيل الفيديو 🎥</button>
+            <button class="btn btn-stop" onclick="stopVideo()">إيقاف وإخفاء الفيديو ✖️</button>
+        </div>
+
+        <!-- معرض الصور (3 صور) -->
+        <div class="gallery">
+            <!-- استبدل pic1.jpg و pic2.jpg و pic3.jpg بأسماء صورك الحقيقية -->
+            <img src="pic1.jpg" alt="حب رضا 1">
+            <img src="pic2.jpg" alt="حب رضا 2">
+            <img src="pic3.jpg" alt="حب رضا 3">
+        </div>
+
+        <!-- حاوية الفيديو المخفية في منتصف الشاشة -->
+        <div id="video-container">
+            <!-- استبدل video.mp4 باسم ملف الفيديو الحقيقي عندك -->
+            <video id="my-video" src="video.mp4" controls></video>
+        </div>
+    </div>
+
+    <!-- ملف الصوت المخفي -->
+    <!-- استبدل audio.mp3 باسم ملف الأغنية الحقيقي عندك -->
+    <audio id="my-audio" src="audio.mp3" loop></audio>
+
+    <script>
+        const correctPassword = "1234"; // يمكنك تغيير الباسورد من هنا
+        const audio = document.getElementById('my-audio');
+        const video = document.getElementById('my-video');
+        const videoContainer = document.getElementById('video-container');
+
+        // التحقق من الباسورد
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            if (input === correctPassword) {
+                // إخفاء شاشة القفل وإظهار المحتوى
+                document.getElementById('login-screen').style.display = 'none';
+                const main = document.getElementById('main-content');
+                main.style.display = 'block';
+                setTimeout(() => main.style.opacity = '1', 50);
+
+                // إطلاق تأثير القلوب الطائرة بكثافة عند الدخول للترحيب برضا
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(createHeartAtBottom, i * 100);
+                }
+            } else {
+                alert("الباسورد خطأ يا رضا! حاول تاني تعالي ركز 💖");
+            }
+        }
+
+        // إنشاء قلوب عشوائية من الأسفل عند الدخول
+        function createHeartAtBottom() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.bottom = '0px';
+            heart.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+        }
+
+        // تأثير اللمس / الضغط في أي مكان في الموقع (قلوب + كلمة بحبك يا رضا)
+        document.addEventListener('click', function(e) {
+            // نمنع التأثير لو بنضغط على الأزرار أو الإدخال
+            if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
+
+            // 1. إنشاء قلب مكان الضغطة
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = e.pageX + 'px';
+            heart.style.top = e.pageY + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
+
+            // 2. إنشاء كلمة "بحبك يا رضا" تطير لمسافة مكان الضغطة
+            const text = document.createElement('div');
+            text.classList.add('floating-text');
+            text.innerHTML = 'بحبك يا رضا 💖';
+            text.style.left = (e.pageX - 50) + 'px';
+            text.style.top = e.pageY + 'px';
+            document.body.appendChild(text);
+            setTimeout(() => text.remove(), 3000);
+        });
+
+        // تشغيل وإيقاف الصوت
+        function playAudio() {
+            audio.play().catch(error => console.log("تحتاج للتفاعل مع الصفحة أولاً لتشغيل الصوت"));
+        }
+
+        function stopAudio() {
+            audio.pause();
+        }
+
+        // تشغيل وإيقاف الفيديو مع تأثير النبض في المنتصف
+        function playVideo() {
+            videoContainer.style.display = 'block';
+            setTimeout(() => {
+                videoContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+                videoContainer.classList.add('pulsing'); // تفعيل أنيميشن النبض
+                video.play();
+            }, 50);
+        }
+
+        function stopVideo() {
+            video.pause();
+            videoContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+            videoContainer.classList.remove('pulsing'); // إيقاف النبض
+            setTimeout(() => {
+                videoContainer.style.display = 'none';
+            }, 500);
+        }
+    </script>
+</body>
+</html>
